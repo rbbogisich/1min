@@ -39,6 +39,7 @@
             font-size: 2em;
             color: #558b2f;
             margin-bottom: 20px;
+            display: none; /* Скрываем заголовок */
         }
         #cabbage {
             width: 100px;
@@ -54,12 +55,6 @@
         @keyframes spin {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
-        }
-        #timer {
-            font-size: 2em;
-            color: #f57f17;
-            margin: 20px 0;
-            font-weight: bold;
         }
         .button {
             display: inline-block;
@@ -136,13 +131,27 @@
             text-decoration: none;
             cursor: pointer;
         }
+        .highlight {
+            animation: glow 1s ease-in-out infinite alternate;
+        }
+        @keyframes glow {
+            from {
+                background-color: #558b2f;
+            }
+            to {
+                background-color: #66bb6a;
+            }
+        }
     </style>
 </head>
 <body>
     <div id="balance">Баланс: <span id="coinBalance">0.0</span> FARMER</div>
     <div class="container">
-        <h1>Игра с капустой</h1>
         <div id="cabbage"></div>
+        <div id="statusContainer" style="display: none;">
+            <div class="status" id="statusText">Сбор 0.0</div>
+            <div id="timerText" style="font-size: 1.2em; color: #f57f17;">10</div>
+        </div>
         <button id="startButton" class="button">СТАРТ</button>
         <button id="collectButton" class="button" style="display: none;">СОБРАТЬ</button>
         <div class="nav-container">
@@ -152,9 +161,6 @@
             <button class="nav-button" onclick="openModal('Активность')">Активность</button>
             <button class="nav-button" onclick="openModal('Профит')">Профит</button>
             <button class="nav-button" onclick="openModal('Кошелек')">Кошелек</button>
-        </div>
-        <div id="statusContainer" style="display: none;">
-            <div class="status" id="statusText">Сбор 0.0</div>
         </div>
     </div>
 
@@ -183,6 +189,7 @@
         const coinBalanceDisplay = document.getElementById('coinBalance');
         const statusContainer = document.getElementById('statusContainer');
         const statusText = document.getElementById('statusText');
+        const timerText = document.getElementById('timerText');
 
         startButton.onclick = () => {
             startGame();
@@ -200,11 +207,13 @@
             statusContainer.style.display = 'block';
             updateStatusText();
             collectButton.style.display = 'none'; // Скрыть кнопку СОБРАТЬ
+            timerText.innerText = timeLeft; // Установить начальное время
 
             interval = setInterval(() => {
                 timeLeft--;
                 collectedCoins += coinsToCollect; // Добавляем монеты каждую секунду
                 updateStatusText();
+                timerText.innerText = timeLeft; // Обновить текст таймера
 
                 if (timeLeft <= 0) {
                     clearInterval(interval);
@@ -221,19 +230,18 @@
             clearInterval(interval);
             cabbage.classList.remove('rotate');
             collectButton.style.display = 'block'; // Показываем кнопку СОБРАТЬ
+            collectButton.classList.add('highlight'); // Добавляем эффект подсветки кнопки
         }
 
         function collectCoins() {
             coinBalance += collectedCoins; // Добавляем накопленные монеты к балансу
             coinBalanceDisplay.innerText = coinBalance.toFixed(1); // Обновляем баланс
-            resetGame(); // Сбрасываем игру
-        }
-
-        function resetGame() {
-            collectedCoins = 0; // Сброс накопленных монет
-            statusText.innerText = `Сбор 0.0`; // Сброс статуса
-            collectButton.style.display = 'none'; // Скрываем кнопку СОБРАТЬ
+            collectedCoins = 0; // Сбрасываем накопленные монеты
+            updateStatusText();
+            collectButton.style.display = 'none'; // Скрыть кнопку СОБРАТЬ
             startButton.style.display = 'block'; // Показываем кнопку СТАРТ
+            statusContainer.style.display = 'none'; // Скрываем статус
+            collectButton.classList.remove('highlight'); // Убираем эффект подсветки
         }
 
         // Модальные окна
