@@ -77,12 +77,6 @@
         .button:hover {
             background-color: #33691e;
         }
-        .button-collect {
-            background-color: #ff9800;
-        }
-        .button-collect:hover {
-            background-color: #e65100;
-        }
         .nav-button {
             padding: 10px 15px;
             margin: 5px;
@@ -126,7 +120,7 @@
             <button class="nav-button">Кошелек</button>
         </div>
         <div id="statusContainer" style="display: none;">
-            <div class="status" id="statusText">Сбор 0.1 00:00:10</div>
+            <div class="status" id="statusText">Сбор 0.0 00:00:10</div>
         </div>
     </div>
 
@@ -135,6 +129,8 @@
         let countdown;
         let coinBalance = 0.0;
         let coinsToCollect = 0.1; // Количество собираемых монет
+        let timeLeft = 10; // Время 10 секунд
+        let interval;
 
         const startButton = document.getElementById('startButton');
         const timerDisplay = document.getElementById('timer');
@@ -144,53 +140,45 @@
         const statusText = document.getElementById('statusText');
 
         startButton.onclick = () => {
-            if (startButton.innerText === 'СТАРТ') {
-                startGame();
-            } else {
-                collectCoins();
-            }
+            startGame();
         };
 
         function startGame() {
-            startButton.disabled = true;
             startButton.style.display = 'none'; // Скрыть кнопку СТАРТ
             cabbage.classList.add('rotate');
-            let timeLeft = 10; // Время 10 секунд
-            updateTimerDisplay(timeLeft);
+            timeLeft = 10; // Время 10 секунд
+            updateTimerDisplay();
             statusContainer.style.display = 'block';
-            statusText.innerText = `Сбор ${coinsToCollect} 00:00:${timeLeft}`;
+            updateStatusText();
 
-            countdown = setInterval(() => {
+            interval = setInterval(() => {
                 timeLeft--;
-                updateTimerDisplay(timeLeft);
-
-                // Обновляем текст статуса
-                statusText.innerText = `Сбор ${coinsToCollect} 00:00:${timeLeft}`;
+                updateTimerDisplay();
+                coinBalance += coinsToCollect; // Добавляем монеты каждую секунду
+                updateStatusText();
 
                 if (timeLeft <= 0) {
-                    clearInterval(countdown);
+                    clearInterval(interval);
                     endGame();
                 }
             }, 1000);
         }
 
-        function updateTimerDisplay(time) {
-            const seconds = time % 60;
-            timerDisplay.innerText = `00:${seconds < 10 ? '0' : ''}${seconds}`;
+        function updateTimerDisplay() {
+            const seconds = timeLeft < 10 ? '0' + timeLeft : timeLeft; // Добавляем ноль перед числом
+            timerDisplay.innerText = `00:${seconds}`;
+        }
+
+        function updateStatusText() {
+            statusText.innerText = `Сбор ${coinBalance.toFixed(1)} ${timerDisplay.innerText}`;
         }
 
         function endGame() {
+            clearInterval(interval);
             cabbage.classList.remove('rotate');
-            startButton.innerText = `Сбор ${coinsToCollect} 00:00:00`;
-            startButton.style.display = 'block'; // Показать кнопку снова
-            startButton.disabled = false;
-        }
-
-        function collectCoins() {
-            coinBalance += coinsToCollect; // Обновляем баланс
-            coinBalanceDisplay.innerText = coinBalance.toFixed(1); // Обновляем отображение
-            startButton.innerText = 'СТАРТ'; // Меняем текст обратно на СТАРТ
+            startButton.style.display = 'block'; // Показать кнопку СТАРТ
             statusContainer.style.display = 'none'; // Скрыть статус
+            coinBalanceDisplay.innerText = coinBalance.toFixed(1); // Обновить баланс
         }
     </script>
 </body>
