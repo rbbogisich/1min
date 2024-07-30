@@ -149,11 +149,11 @@
         <div class="balance-text">Текущий баланс: <span id="currentBalance">0.0</span> FARMER</div>
         <div id="cabbage"></div>
         <div id="statusContainer" style="display: none;">
-            <div class="status" id="statusText">Сбор <span id="collectedCoins">0.0</span></div>
+            <div class="status" id="statusText"><span id="collectedCoins">0.0</span></div>
             <div id="timerText" style="font-size: 1.2em; color: #f57f17; display: inline-block; margin-left: 10px;">10</div>
         </div>
         <button id="startButton" class="button">СТАРТ</button>
-        <button id="collectButton" class="button highlight" style="display: none;">СБОР</button>
+        <button id="collectButton" class="button highlight" style="display: none;" disabled>СБОР</button>
         <div class="nav-container">
             <button class="nav-button" onclick="openModal('Главная')">Главная</button>
             <button class="nav-button" onclick="openModal('Задания')">Задания</button>
@@ -202,8 +202,8 @@
             timeLeft = 10; // Время 10 секунд
             collectedCoins = 0; // Сброс накопленных монет
             statusContainer.style.display = 'block';
+            collectButton.disabled = true; // Деактивируем кнопку СБОР
             updateStatusText();
-            collectButton.style.display = 'none'; // Скрыть кнопку СОБРАТЬ
             timerText.innerText = timeLeft; // Установить начальное время
 
             interval = setInterval(() => {
@@ -221,48 +221,32 @@
 
         function updateStatusText() {
             collectedCoinsDisplay.innerText = collectedCoins.toFixed(1);
-            statusText.innerText = `Сбор ${collectedCoins.toFixed(1)}`;
+            statusText.innerText = `${collectedCoins.toFixed(1)}`; // Убрать "Сбор"
         }
 
         function endGame() {
             clearInterval(interval);
             cabbage.classList.remove('rotate');
-            collectButton.style.display = 'block'; // Показываем кнопку СБОР
-            collectButton.classList.add('highlight'); // Подсвечиваем кнопку
-            updateCoinBalance(); // Обновляем баланс
-            timerText.style.display = 'none'; // Скрыть таймер
-        }
-
-        function updateCoinBalance() {
-            coinBalance += collectedCoins; // Обновить баланс пользователя
+            collectButton.style.display = 'none'; // Скрыть кнопку СБОР
+            coinBalance += collectedCoins; // Зачислить собранные монеты на баланс
             coinBalanceDisplay.innerText = coinBalance.toFixed(1); // Обновить баланс
-            collectedCoins = 0; // Сбросить накопленные монеты
-            updateStatusText();
+            startButton.style.display = 'inline-block'; // Показать кнопку СТАРТ
         }
 
-        // Модальные окна
         function openModal(title) {
             document.getElementById('modalTitle').innerText = title;
-            document.getElementById('myModal').style.display = "block";
+            document.getElementById('myModal').style.display = 'block';
         }
 
         function closeModal() {
-            document.getElementById('myModal').style.display = "none";
+            document.getElementById('myModal').style.display = 'none';
         }
 
         function submitModal() {
-            const inputValue = document.getElementById('modalInput').value;
-            console.log(`Вы ввели: ${inputValue}`);
+            const input = document.getElementById('modalInput').value;
+            alert(`Вы отправили: ${input}`);
             closeModal();
         }
-
-        // Закрытие модального окна при клике вне его
-        window.onclick = function(event) {
-            const modal = document.getElementById('myModal');
-            if (event.target === modal) {
-                closeModal();
-            }
-        };
     </script>
 </body>
 </html>
