@@ -192,7 +192,7 @@
             collectedCoins = 0; // Сброс накопленных монет
             statusContainer.style.display = 'block';
             updateStatusText();
-            collectButton.style.display = 'none'; // Скрыть кнопку СБОР
+            collectButton.style.display = 'none'; // Скрыть кнопку СОБРАТЬ
             timerText.innerText = timeLeft; // Установить начальное время
 
             interval = setInterval(() => {
@@ -225,6 +225,19 @@
         function updateCoinBalance() {
             coinBalance += collectedCoins; // Обновить баланс пользователя
             coinBalanceDisplay.innerText = coinBalance.toFixed(1); // Обновить баланс
+            collectedCoins = 0; // Сбросить накопленные монеты
+            updateStatusText();
+        }
+
+        // Функция для сбора монет
+        collectButton.onclick = () => {
+            collectCoins();
+        };
+
+        function collectCoins() {
+            collectButton.style.display = 'none'; // Скрыть кнопку после сбора
+            startButton.style.display = 'block'; // Показать кнопку СТАРТ для новой игры
+            updateCoinBalance(); // Обновить баланс
             collectedCoins = 0; // Сбросить накопленные монеты
             updateStatusText();
         }
