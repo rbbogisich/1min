@@ -35,11 +35,10 @@
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-        h1 {
-            font-size: 2em;
-            color: #558b2f;
+        .balance-text {
+            font-size: 1.5em;
             margin-bottom: 20px;
-            display: none; /* Скрываем заголовок */
+            color: #558b2f;
         }
         #cabbage {
             width: 100px;
@@ -147,13 +146,14 @@
 <body>
     <div id="balance">Баланс: <span id="coinBalance">0.0</span> FARMER</div>
     <div class="container">
+        <div class="balance-text">Текущий баланс: <span id="currentBalance">0.0</span> FARMER</div>
         <div id="cabbage"></div>
         <div id="statusContainer" style="display: none;">
-            <div class="status" id="statusText">Сбор 0.0</div>
-            <div id="timerText" style="font-size: 1.2em; color: #f57f17;">10</div>
+            <div class="status" id="statusText">Сбор <span id="collectedCoins">0.0</span></div>
+            <div id="timerText" style="font-size: 1.2em; color: #f57f17; display: inline-block; margin-left: 10px;">10</div>
         </div>
         <button id="startButton" class="button">СТАРТ</button>
-        <button id="collectButton" class="button" style="display: none;">СОБРАТЬ</button>
+        <button id="collectButton" class="button highlight" style="display: none;">СБОР</button>
         <div class="nav-container">
             <button class="nav-button" onclick="openModal('Главная')">Главная</button>
             <button class="nav-button" onclick="openModal('Задания')">Задания</button>
@@ -184,19 +184,16 @@
         let collectedCoins = 0; // Накопленные монеты
 
         const startButton = document.getElementById('startButton');
-        const collectButton = document.getElementById('collectButton');
         const cabbage = document.getElementById('cabbage');
         const coinBalanceDisplay = document.getElementById('coinBalance');
         const statusContainer = document.getElementById('statusContainer');
         const statusText = document.getElementById('statusText');
         const timerText = document.getElementById('timerText');
+        const collectedCoinsDisplay = document.getElementById('collectedCoins');
+        const collectButton = document.getElementById('collectButton');
 
         startButton.onclick = () => {
             startGame();
-        };
-
-        collectButton.onclick = () => {
-            collectCoins();
         };
 
         function startGame() {
@@ -223,25 +220,24 @@
         }
 
         function updateStatusText() {
+            collectedCoinsDisplay.innerText = collectedCoins.toFixed(1);
             statusText.innerText = `Сбор ${collectedCoins.toFixed(1)}`;
         }
 
         function endGame() {
             clearInterval(interval);
             cabbage.classList.remove('rotate');
-            collectButton.style.display = 'block'; // Показываем кнопку СОБРАТЬ
-            collectButton.classList.add('highlight'); // Добавляем эффект подсветки кнопки
+            collectButton.style.display = 'block'; // Показываем кнопку СБОР
+            collectButton.classList.add('highlight'); // Подсвечиваем кнопку
+            updateCoinBalance(); // Обновляем баланс
+            timerText.style.display = 'none'; // Скрыть таймер
         }
 
-        function collectCoins() {
-            coinBalance += collectedCoins; // Добавляем накопленные монеты к балансу
-            coinBalanceDisplay.innerText = coinBalance.toFixed(1); // Обновляем баланс
-            collectedCoins = 0; // Сбрасываем накопленные монеты
+        function updateCoinBalance() {
+            coinBalance += collectedCoins; // Обновить баланс пользователя
+            coinBalanceDisplay.innerText = coinBalance.toFixed(1); // Обновить баланс
+            collectedCoins = 0; // Сбросить накопленные монеты
             updateStatusText();
-            collectButton.style.display = 'none'; // Скрыть кнопку СОБРАТЬ
-            startButton.style.display = 'block'; // Показываем кнопку СТАРТ
-            statusContainer.style.display = 'none'; // Скрываем статус
-            collectButton.classList.remove('highlight'); // Убираем эффект подсветки
         }
 
         // Модальные окна
