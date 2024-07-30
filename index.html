@@ -102,6 +102,40 @@
             margin: 20px 0;
             color: #333;
         }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -109,19 +143,28 @@
     <div class="container">
         <h1>Игра с капустой</h1>
         <div id="cabbage"></div>
-        <div id="timer">00:10</div>
         <button id="startButton" class="button">СТАРТ</button>
         <button id="collectButton" class="button" style="display: none;">СОБРАТЬ</button>
         <div class="nav-container">
-            <button class="nav-button">Главная</button>
-            <button class="nav-button">Задания</button>
-            <button class="nav-button">Друзья</button>
-            <button class="nav-button">Активность</button>
-            <button class="nav-button">Профит</button>
-            <button class="nav-button">Кошелек</button>
+            <button class="nav-button" onclick="openModal('Главная')">Главная</button>
+            <button class="nav-button" onclick="openModal('Задания')">Задания</button>
+            <button class="nav-button" onclick="openModal('Друзья')">Друзья</button>
+            <button class="nav-button" onclick="openModal('Активность')">Активность</button>
+            <button class="nav-button" onclick="openModal('Профит')">Профит</button>
+            <button class="nav-button" onclick="openModal('Кошелек')">Кошелек</button>
         </div>
         <div id="statusContainer" style="display: none;">
-            <div class="status" id="statusText">Сбор 0.0 00:00:10</div>
+            <div class="status" id="statusText">Сбор 0.0</div>
+        </div>
+    </div>
+
+    <!-- Модальные окна -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <input type="text" id="modalInput" placeholder="Введите текст" style="width: 100%; padding: 10px; margin-top: 10px; border: 1px solid #ccc; border-radius: 5px;">
+            <button class="button" onclick="submitModal()">Отправить</button>
         </div>
     </div>
 
@@ -136,7 +179,6 @@
 
         const startButton = document.getElementById('startButton');
         const collectButton = document.getElementById('collectButton');
-        const timerDisplay = document.getElementById('timer');
         const cabbage = document.getElementById('cabbage');
         const coinBalanceDisplay = document.getElementById('coinBalance');
         const statusContainer = document.getElementById('statusContainer');
@@ -155,7 +197,6 @@
             cabbage.classList.add('rotate');
             timeLeft = 10; // Время 10 секунд
             collectedCoins = 0; // Сброс накопленных монет
-            updateTimerDisplay();
             statusContainer.style.display = 'block';
             updateStatusText();
             collectButton.style.display = 'none'; // Скрыть кнопку СОБРАТЬ
@@ -163,7 +204,6 @@
             interval = setInterval(() => {
                 timeLeft--;
                 collectedCoins += coinsToCollect; // Добавляем монеты каждую секунду
-                updateTimerDisplay();
                 updateStatusText();
 
                 if (timeLeft <= 0) {
@@ -173,21 +213,14 @@
             }, 1000);
         }
 
-        function updateTimerDisplay() {
-            const seconds = timeLeft < 10 ? '0' + timeLeft : timeLeft; // Добавляем ноль перед числом
-            timerDisplay.innerText = `00:${seconds}`;
-        }
-
         function updateStatusText() {
-            statusText.innerText = `Сбор ${collectedCoins.toFixed(1)} ${timerDisplay.innerText}`;
+            statusText.innerText = `Сбор ${collectedCoins.toFixed(1)}`;
         }
 
         function endGame() {
             clearInterval(interval);
             cabbage.classList.remove('rotate');
-            startButton.style.display = 'none'; // Оставляем кнопку СТАРТ скрытой
             collectButton.style.display = 'block'; // Показываем кнопку СОБРАТЬ
-            statusContainer.style.display = 'block'; // Показать статус
         }
 
         function collectCoins() {
@@ -198,11 +231,34 @@
 
         function resetGame() {
             collectedCoins = 0; // Сброс накопленных монет
-            timerDisplay.innerText = '00:10'; // Сброс таймера
-            statusText.innerText = `Сбор 0.0 00:00:10`; // Сброс статуса
+            statusText.innerText = `Сбор 0.0`; // Сброс статуса
             collectButton.style.display = 'none'; // Скрываем кнопку СОБРАТЬ
             startButton.style.display = 'block'; // Показываем кнопку СТАРТ
         }
+
+        // Модальные окна
+        function openModal(title) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('myModal').style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById('myModal').style.display = "none";
+        }
+
+        function submitModal() {
+            const inputValue = document.getElementById('modalInput').value;
+            console.log(`Вы ввели: ${inputValue}`);
+            closeModal();
+        }
+
+        // Закрытие модального окна при клике вне его
+        window.onclick = function(event) {
+            const modal = document.getElementById('myModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        };
     </script>
 </body>
 </html>
