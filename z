@@ -1,0 +1,4 @@
+mkdir farm-game-bot
+cd farm-game-bot
+npm init -y
+npm install express node-telegram-bot-api
