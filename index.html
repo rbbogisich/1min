@@ -43,7 +43,7 @@
         #cabbage {
             width: 100px;
             height: 100px;
-            background-image: url('kapysta.gif'); /* Обязательно замените на реальное изображение капусты */
+            background-image: url('kapysta.gif'); /* Замените на реальное изображение капусты */
             background-size: cover;
             margin: 0 auto 20px auto;
             animation: none;
@@ -72,6 +72,7 @@
             cursor: pointer;
             font-size: 1em;
             transition: background-color 0.3s ease;
+            width: 100%; /* Занять всю ширину */
         }
         .button:hover {
             background-color: #33691e;
@@ -102,6 +103,11 @@
             flex-wrap: wrap;
             margin-top: 20px;
         }
+        .status {
+            font-size: 1.5em;
+            margin: 20px 0;
+            color: #333;
+        }
     </style>
 </head>
 <body>
@@ -119,6 +125,9 @@
             <button class="nav-button">Профит</button>
             <button class="nav-button">Кошелек</button>
         </div>
+        <div id="statusContainer" style="display: none;">
+            <div class="status" id="statusText">Сбор 0.1 00:00:10</div>
+        </div>
     </div>
 
     <script>
@@ -130,6 +139,8 @@
         const timerDisplay = document.getElementById('timer');
         const cabbage = document.getElementById('cabbage');
         const coinBalanceDisplay = document.getElementById('coinBalance');
+        const statusContainer = document.getElementById('statusContainer');
+        const statusText = document.getElementById('statusText');
 
         startButton.onclick = () => {
             if (startButton.innerText === 'СТАРТ') {
@@ -143,13 +154,17 @@
             startButton.disabled = true;
             startButton.innerText = 'СТАРТ';
             cabbage.classList.add('rotate');
-            let timeLeft = 10; // Изменено на 10 секунд
+            let timeLeft = 10; // Время 10 секунд
             updateTimerDisplay(timeLeft);
+            statusContainer.style.display = 'block';
 
             countdown = setInterval(() => {
                 timeLeft--;
                 updateTimerDisplay(timeLeft);
                 updateCoinBalance(0.1);
+
+                // Обновляем текст статуса
+                statusText.innerText = `Сбор 0.1 00:00:${timeLeft < 10 ? '0' : ''}${timeLeft}`;
 
                 if (timeLeft <= 0) {
                     clearInterval(countdown);
@@ -179,6 +194,7 @@
         function collectCoins() {
             startButton.classList.remove('button-collect');
             startButton.innerText = 'СТАРТ';
+            statusContainer.style.display = 'none'; // Скрыть статус
         }
     </script>
 </body>
