@@ -134,6 +134,7 @@
         let timer;
         let countdown;
         let coinBalance = 0.0;
+        let coinsToCollect = 0.1; // Количество собираемых монет
 
         const startButton = document.getElementById('startButton');
         const timerDisplay = document.getElementById('timer');
@@ -145,26 +146,26 @@
         startButton.onclick = () => {
             if (startButton.innerText === 'СТАРТ') {
                 startGame();
-            } else if (startButton.innerText === 'ЗАБРАТЬ') {
+            } else {
                 collectCoins();
             }
         };
 
         function startGame() {
             startButton.disabled = true;
-            startButton.innerText = 'СТАРТ';
+            startButton.style.display = 'none'; // Скрыть кнопку СТАРТ
             cabbage.classList.add('rotate');
             let timeLeft = 10; // Время 10 секунд
             updateTimerDisplay(timeLeft);
             statusContainer.style.display = 'block';
+            statusText.innerText = `Сбор ${coinsToCollect} 00:00:${timeLeft}`;
 
             countdown = setInterval(() => {
                 timeLeft--;
                 updateTimerDisplay(timeLeft);
-                updateCoinBalance(0.1);
 
                 // Обновляем текст статуса
-                statusText.innerText = `Сбор 0.1 00:00:${timeLeft < 10 ? '0' : ''}${timeLeft}`;
+                statusText.innerText = `Сбор ${coinsToCollect} 00:00:${timeLeft}`;
 
                 if (timeLeft <= 0) {
                     clearInterval(countdown);
@@ -174,26 +175,21 @@
         }
 
         function updateTimerDisplay(time) {
-            const minutes = Math.floor(time / 60);
             const seconds = time % 60;
             timerDisplay.innerText = `00:${seconds < 10 ? '0' : ''}${seconds}`;
         }
 
-        function updateCoinBalance(amount) {
-            coinBalance += amount;
-            coinBalanceDisplay.innerText = coinBalance.toFixed(1);
-        }
-
         function endGame() {
             cabbage.classList.remove('rotate');
-            startButton.innerText = 'ЗАБРАТЬ';
-            startButton.classList.add('button-collect');
+            startButton.innerText = `Сбор ${coinsToCollect} 00:00:00`;
+            startButton.style.display = 'block'; // Показать кнопку снова
             startButton.disabled = false;
         }
 
         function collectCoins() {
-            startButton.classList.remove('button-collect');
-            startButton.innerText = 'СТАРТ';
+            coinBalance += coinsToCollect; // Обновляем баланс
+            coinBalanceDisplay.innerText = coinBalance.toFixed(1); // Обновляем отображение
+            startButton.innerText = 'СТАРТ'; // Меняем текст обратно на СТАРТ
             statusContainer.style.display = 'none'; // Скрыть статус
         }
     </script>
