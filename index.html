@@ -82,6 +82,26 @@
         .button-collect:hover {
             background-color: #e65100;
         }
+        .nav-button {
+            padding: 10px 15px;
+            margin: 5px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease;
+        }
+        .nav-button:hover {
+            background-color: #388e3c;
+        }
+        .nav-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -91,6 +111,14 @@
         <div id="cabbage"></div>
         <div id="timer">00:10</div>
         <button id="startButton" class="button">СТАРТ</button>
+        <div class="nav-container">
+            <button class="nav-button">Главная</button>
+            <button class="nav-button">Задания</button>
+            <button class="nav-button">Друзья</button>
+            <button class="nav-button">Активность</button>
+            <button class="nav-button">Профит</button>
+            <button class="nav-button">Кошелек</button>
+        </div>
     </div>
 
     <script>
