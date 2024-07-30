@@ -3,19 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Счастливый фермер</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Игра с капустой</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e0f7fa;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        #balance {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 1.2em;
+        }
+        #cabbage {
+            width: 100px;
+            height: 100px;
+            background-image: url('kapysta.gif');
+            background-size: cover;
+            margin: 0 auto;
+            animation: none;
+        }
+        .rotate {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        #timer {
+            font-size: 2em;
+            margin: 20px 0;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4caf50;
+            color: white;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .button-collect {
+            background-color: #ff9800;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>Счастливый фермер</h1>
-        <div class="game">
-            <div id="field"></div>
-            <button id="plantButton" class="button">Посадить семена</button>
-            <button id="harvestButton" class="button">Собрать урожай</button>
-            <p id="status"></p>
-        </div>
+        <div id="balance">Баланс: <span id="coinBalance">0</span> FARMER</div>
+        <h1>Игра с капустой</h1>
+        <div id="cabbage"></div>
+        <div id="timer">00:00</div>
+        <button id="startButton" class="button">СТАРТ</button>
     </div>
-    <script src="script.js"></script>
+
+    <script>
+        let timer;
+        let countdown;
+        let coinBalance = 0;
+
+        const startButton = document.getElementById('startButton');
+        const timerDisplay = document.getElementById('timer');
+        const cabbage = document.getElementById('cabbage');
+        const coinBalanceDisplay = document.getElementById('coinBalance');
+
+        startButton.onclick = () => {
+            if (startButton.innerText === 'СТАРТ') {
+                startGame();
+            } else if (startButton.innerText === 'ЗАБРАТЬ') {
+                collectCoins();
+            }
+        };
+
+        function startGame() {
+            startButton.disabled = true;
+            startButton.innerText = 'СТАРТ';
+            cabbage.classList.add('rotate');
+            let timeLeft = 60;
+            updateTimerDisplay(timeLeft);
+
+            countdown = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay(timeLeft);
+
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay(time) {
+            const minutes = Math.floor(time / 60);
+            const seconds = time % 60;
+            timerDisplay.innerText = `00:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
+
+        function endGame() {
+            cabbage.classList.remove('rotate');
+            startButton.innerText = 'ЗАБРАТЬ';
+            startButton.classList.add('button-collect');
+            startButton.disabled = false;
+        }
+
+        function collectCoins() {
+            coinBalance += 10;
+            coinBalanceDisplay.innerText = coinBalance;
+            startButton.classList.remove('button-collect');
+            startButton.innerText = 'СТАРТ';
+        }
+    </script>
 </body>
 </html>
