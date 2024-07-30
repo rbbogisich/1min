@@ -85,18 +85,18 @@
     </style>
 </head>
 <body>
-    <div id="balance">Баланс: <span id="coinBalance">0</span> FARMER</div>
+    <div id="balance">Баланс: <span id="coinBalance">0.0</span> FARMER</div>
     <div class="container">
         <h1>Игра с капустой</h1>
         <div id="cabbage"></div>
-        <div id="timer">00:00</div>
+        <div id="timer">00:10</div>
         <button id="startButton" class="button">СТАРТ</button>
     </div>
 
     <script>
         let timer;
         let countdown;
-        let coinBalance = 0;
+        let coinBalance = 0.0;
 
         const startButton = document.getElementById('startButton');
         const timerDisplay = document.getElementById('timer');
@@ -121,6 +121,7 @@
             countdown = setInterval(() => {
                 timeLeft--;
                 updateTimerDisplay(timeLeft);
+                updateCoinBalance(0.1);
 
                 if (timeLeft <= 0) {
                     clearInterval(countdown);
@@ -135,6 +136,11 @@
             timerDisplay.innerText = `00:${seconds < 10 ? '0' : ''}${seconds}`;
         }
 
+        function updateCoinBalance(amount) {
+            coinBalance += amount;
+            coinBalanceDisplay.innerText = coinBalance.toFixed(1);
+        }
+
         function endGame() {
             cabbage.classList.remove('rotate');
             startButton.innerText = 'ЗАБРАТЬ';
@@ -143,8 +149,6 @@
         }
 
         function collectCoins() {
-            coinBalance += 10;
-            coinBalanceDisplay.innerText = coinBalance;
             startButton.classList.remove('button-collect');
             startButton.innerText = 'СТАРТ';
         }
