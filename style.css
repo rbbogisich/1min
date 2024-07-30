@@ -1,0 +1,39 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #e0f7fa;
+    text-align: center;
+    padding: 20px;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.game {
+    margin-top: 20px;
+}
+
+#field {
+    width: 100%;
+    height: 200px;
+    border: 2px dashed #4caf50;
+    background-color: #c8e6c9;
+    position: relative;
+    overflow: hidden;
+}
+
+.plant {
+    width: 30px;
+    height: 30px;
+    background-color: #8bc34a;
+    border-radius: 50%;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
